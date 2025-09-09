@@ -1,16 +1,21 @@
 import nodemailer from "nodemailer";
 
 const sendReminderEmail = async (data, userEmail) => {
-  const transport = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.MAIL_USER,
-      pass: process.env.MAIL_PASS,
-    },
-  });
+  try {
+    //  Gmail
+    const transport = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true, // true 
+      auth: {
+        user: process.env.MAIL_USER, //  Gmail   
+        pass: process.env.MAIL_PASS, // App Password
+      },
+    });
 
-  console.log("Transport created",userEmail);
-  const mailOptions = {
+    console.log("Transport created for:", userEmail);
+
+    const mailOptions =  {
     from: `"Your Store" <${process.env.MAIL_USER}>`,
     to: userEmail,
     subject: `✅ Payment Confirmed - Order #${data.order || ""}`,
@@ -173,8 +178,11 @@ const sendReminderEmail = async (data, userEmail) => {
     `,
   };
 
-  await transport.sendMail(mailOptions);
-  console.log("Professional orange-themed email sent successfully");
+  const info = await transport.sendMail(mailOptions);
+    console.log("Professional orange-themed email sent successfully:", info.messageId);
+  } catch (error) {
+    console.error("Error sending email:", error);
+  }
 };
 
 export default sendReminderEmail;
