@@ -180,10 +180,10 @@
 // export default sendReminderEmail;
 
 import { Resend } from "resend";
-console.log("env",process.env.RESEND_API_KEY)
 const resend = new Resend(process.env.RESEND_API_KEY);
-console.log("Resend initialized" , resend);
 const sendReminderEmail = async (data, userEmail) => {
+  console.log("env",process.env.RESEND_API_KEY)
+  console.log("Resend initialized" , resend);
   try {
     await resend.emails.send({
       from: 'onboarding@resend.dev',
