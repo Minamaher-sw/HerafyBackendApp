@@ -75,16 +75,46 @@ app.use(
     credentials: true, // allow cookies
   })
 );
+// app.post(
+//   "/api/webhook",
+//   bodyParser.raw({ type: "application/json" }), // raw body is required for Stripe
+//   async (req, res) => {
+//     const sig = req.headers["stripe-signature"];
+//     let event;
+
+//     try {
+//       // Verify that the event is actually from Stripe
+//       event = Stripe.webhooks.constructEvent(
+//         req.body,
+//         sig,
+//         process.env.STRIPE_WEBHOOK_SECRET
+//       );
+//     } catch (err) {
+//       console.error("Webhook signature verification failed:", err.message);
+//       return res.status(400).send(`Webhook Error: ${err.message}`);
+//     }
+
+//     try {
+//       // Handle the Stripe event
+//       await paymentService.handleStripeWebhook(event);
+//       res.json({ received: true });
+//     } catch (err) {
+//       console.error("Webhook handling failed:", err);
+//       res.status(500).send("Webhook handler error");
+//     }
+//   }
+// );
+// Webhook endpoint
 app.post(
   "/api/webhook",
-  bodyParser.raw({ type: "application/json" }), // raw body is required for Stripe
+  bodyParser.raw({ type: "application/json" }), // Stripe requires raw body
   async (req, res) => {
     const sig = req.headers["stripe-signature"];
     let event;
 
     try {
-      // Verify that the event is actually from Stripe
-      event = Stripe.webhooks.constructEvent(
+      // Verify Stripe signature
+      event = stripe.webhooks.constructEvent(
         req.body,
         sig,
         process.env.STRIPE_WEBHOOK_SECRET
@@ -97,6 +127,24 @@ app.post(
     try {
       // Handle the Stripe event
       await paymentService.handleStripeWebhook(event);
+
+      // Example: Send email on successful payment
+      if (event.type === "payment_intent.succeeded" || event.type === "checkout.session.completed") {
+        const paymentData = event.data.object;
+        const userEmail = paymentData.receipt_email || paymentData.customer_email;
+        
+        // Call Resend email function
+        if (userEmail) {
+          await sendReminderEmail({
+            order: paymentData.id,
+            amount: (paymentData.amount / 100).toFixed(2),
+            paymentMethod: paymentData.payment_method_types?.[0] || "Card",
+            status: paymentData.status,
+            updatedAt: paymentData.created * 1000, // Stripe timestamps are in seconds
+          }, userEmail);
+        }
+      }
+
       res.json({ received: true });
     } catch (err) {
       console.error("Webhook handling failed:", err);
