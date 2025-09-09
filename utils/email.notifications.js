@@ -185,7 +185,7 @@ const sendReminderEmail = async (data, userEmail) => {
   try {
     await resend.emails.send({
   from: 'onboarding@resend.dev',
-  to: 'mosadefmena185@gmail.com',
+  to: "menamosadef5@gmail.com",
   subject: 'Hello World',
   html: '<p>Congrats on sending your <strong>first email</strong>!</p>'
 });
