@@ -186,7 +186,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 const sendReminderEmail = async (data, userEmail) => {
   try {
     await resend.emails.send({
-      from: "Your Store <onboarding@resend.dev>", // لازم يكون verified
+      from: process.env.MAIL_USER, //verified
       to: userEmail,
       subject: `✅ Payment Confirmed - Order #${data.order || ""}`,
       html: `
