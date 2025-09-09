@@ -180,44 +180,15 @@
 // export default sendReminderEmail;
 
 import { Resend } from "resend";
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend('re_dwFTE5Fu_3wxXoTG1eKjkrWPAw6vHyHja');
 const sendReminderEmail = async (data, userEmail) => {
-  console.log("env",process.env.RESEND_API_KEY)
-  console.log("Resend initialized" , resend);
   try {
     await resend.emails.send({
-      from: 'onboarding@resend.dev',
-      to: userEmail,
-      subject: `✅ Payment Confirmed - Order #${data.order || ""}`,
-      html: `
-      <div style="max-width:650px;margin:0 auto;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:linear-gradient(135deg,#fff7ed 0%,#fed7aa 100%);padding:0;border-radius:16px;overflow:hidden;box-shadow:0 10px 30px rgba(249,115,22,0.1);">
-        <!-- Header Section -->
-        <div style="background:linear-gradient(135deg,#f97316 0%,#ea580c 100%);padding:40px 30px;text-align:center;position:relative;">
-          <div style="background:rgba(255,255,255,0.1);border-radius:50%;width:80px;height:80px;margin:0 auto 20px;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(10px);">
-            <div style="background:#fff;border-radius:50%;width:50px;height:50px;display:flex;align-items:center;justify-content:center;">
-              <span style="color:#f97316;font-size:24px;font-weight:bold;">✓</span>
-            </div>
-          </div>
-          <h1 style="margin:0;color:#fff;font-size:28px;font-weight:700;text-shadow:0 2px 4px rgba(0,0,0,0.1);">Payment Successful!</h1>
-          <p style="margin:10px 0 0 0;color:rgba(255,255,255,0.9);font-size:16px;font-weight:400;">Thank you for your purchase</p>
-        </div>
-
-        <!-- Content Section -->
-        <div style="padding:40px 30px;background:#fff;margin:0;">
-          <p>Hello there! 👋</p>
-          <p>We're excited to confirm your payment. Here are your order details:</p>
-          <ul>
-            <li>Order ID: #${data.order}</li>
-            <li>Amount Paid: $${data.amount}</li>
-            <li>Payment Method: ${data.paymentMethod}</li>
-            <li>Status: ${data.status}</li>
-            <li>Transaction Date: ${new Date(data.updatedAt || Date.now()).toLocaleString("en-EG", { timeZone: "Africa/Cairo" })}</li>
-          </ul>
-          <p>Need help? Contact us at <a href="mailto:support@yourstore.com">support@yourstore.com</a></p>
-        </div>
-      </div>
-      `,
-    });
+  from: 'onboarding@resend.dev',
+  to: 'mosadefmena185@gmail.com',
+  subject: 'Hello World',
+  html: '<p>Congrats on sending your <strong>first email</strong>!</p>'
+});
 
     console.log("✅ Professional email sent successfully via Resend");
   } catch (error) {
