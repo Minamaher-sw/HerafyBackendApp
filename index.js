@@ -52,7 +52,7 @@ import Stripe from "stripe";
 //*------------------------------------app setup------------------------------------*//
 const app = express();
 const PORT = process.env.PORT || 5000;
-app.set("trust proxy", "loopback");
+app.set("trust proxy", 1);
 //*------------------------------------middlewares------------------------------------*//
 app.use(helmet());
 // Allow requests if origin is in the list or if request has no origin (like Postman)
@@ -60,7 +60,9 @@ const allowedOrigins = [
   "http://localhost:4200",
   "http://localhost:3001",
   "http://localhost:3000",
+  process.env.CLIENT_URL, // from .env -> production frontend URL
 ];
+
 app.use(
   cors({
     origin: function (origin, callback) {
@@ -70,7 +72,7 @@ app.use(
         callback(new Error("Not allowed by CORS"));
       }
     },
-    credentials: true, // allows sending/receiving cookies
+    credentials: true, // allow cookies
   })
 );
 app.post(
@@ -271,10 +273,9 @@ connecToDb();
 // })();
 
 //*------------------------------------host server ------------------------------------*//   osama saad
-app.listen(PORT, () => {
-  console.log(`🚀 Server is running on https://herafy-backend.up.railway.app`);
+app.listen(process.env.PORT || 5000, () => {
+  console.log(`Server running on port ${process.env.PORT || 5000}`);
 });
-
 //*------------------------------------graceful shutdown------------------------------------*/
 process.on("SIGINT", async () => {
   await closeDbConnection();
