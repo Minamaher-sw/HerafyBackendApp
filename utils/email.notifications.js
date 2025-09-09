@@ -206,23 +206,15 @@
 // };
 
 // export default sendReminderEmail;
-import nodemailer from "nodemailer";
+import sgMail from "@sendgrid/mail";
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const sendReminderEmail = async (data, userEmail) => {
   try {
-    // Configure transporter with SendGrid
-    const transport = nodemailer.createTransport({
-      service: "SendGrid",
-      auth: {
-        user: "apikey", // IMPORTANT: must be literally "apikey"
-        pass: process.env.SENDGRID_API_KEY, // Your SendGrid API Key
-      },
-    });
-
-    // Email options
-    const mailOptions = {
-      from: `"Your Store" <${process.env.MAIL_USER}>`, // The verified sender email
-      to: userEmail,
+    const msg = {
+      to: userEmail, // recipient
+      from: process.env.MAIL_USER, // must be your verified sender
       subject: `✅ Payment Confirmed - Order #${data.order || ""}`,
       html: `
       <div style="max-width: 650px; margin: 0 auto; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #fff7ed 0%, #fed7aa 100%); padding: 0; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(249, 115, 22, 0.1);">
@@ -294,10 +286,10 @@ const sendReminderEmail = async (data, userEmail) => {
     };
 
     // Send email
-    const info = await transport.sendMail(mailOptions);
-    console.log("✅ Email sent successfully:", info.messageId);
+    const response = await sgMail.send(msg);
+    console.log("✅ Email sent successfully:", response[0].statusCode);
   } catch (error) {
-    console.error("❌ Error sending email:", error);
+    console.error("❌ Error sending email:", error.response?.body || error.message);
   }
 };
 
