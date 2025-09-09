@@ -132,8 +132,12 @@ app.post(
       // Example: Send email on successful payment
       if (event.type === "payment_intent.succeeded" || event.type === "checkout.session.completed") {
         const paymentData = event.data.object;
-        const userEmail = paymentData.receipt_email || paymentData.customer_email;
-        
+        console.log("Payment Data:", paymentData); // Log the payment data for debugging
+        // Extract user email from payment data
+        // Adjust based on how you capture email in your payment flow
+        const user = await User.findOne({ _id:paymentData.user });
+        const userEmail = user.email
+        console.log("user email", userEmail)
         // Call Resend email function
         if (userEmail) {
           await sendReminderEmail({
