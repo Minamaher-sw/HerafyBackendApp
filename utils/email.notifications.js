@@ -4,7 +4,8 @@ const sendReminderEmail = async (data, userEmail) => {
   try {
     //  Gmail
     const transport = nodemailer.createTransport({
-      host: "smtp.gmail.com",
+      host: process.env.MAIL_USER || "smtp.gmail.com",
+      service: "SendGrid",
       port: 465,
       secure: true, // true 
       auth: {
