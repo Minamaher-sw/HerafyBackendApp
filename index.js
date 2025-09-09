@@ -115,7 +115,7 @@ app.post(
 
     try {
       // Verify Stripe signature
-      event = stripe.webhooks.constructEvent(
+      event = Stripe.webhooks.constructEvent(
         req.body,
         sig,
         process.env.STRIPE_WEBHOOK_SECRET
