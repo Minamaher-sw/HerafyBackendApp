@@ -48,6 +48,7 @@ import Review from "./models/reviewModel.js";
 import paymentService from "./services/payment.service.js";
 import bodyParser from "body-parser";
 import Stripe from "stripe";
+import sendReminderEmail from "./utils/email.notifications.js";
 
 //*------------------------------------app setup------------------------------------*//
 const app = express();
