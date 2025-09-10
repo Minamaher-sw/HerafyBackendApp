@@ -62,6 +62,7 @@ const allowedOrigins = [
   "http://localhost:3001",
   "http://localhost:3000",
   process.env.CLIENT_URL, // from .env -> production frontend URL
+  process.env.ADMIN_URL
 ];
 
 app.use(
